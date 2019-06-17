@@ -1,4 +1,6 @@
 //jshint esversion:6
+require('dotenv').config();
+
 const ejs = require("ejs");
 const bodyPaser = require("body-parser");
 const mongoose = require("mongoose");
@@ -8,8 +10,10 @@ const encrypt = require('mongoose-encryption');
 const app = express();
 const port = 3000;
 
+const secret = process.env.SECRET;
+
 app.use(bodyPaser.urlencoded({extended: true}));
-app.use(express.static("Public"));
+app.use(express.static("public"));
 app.set("view engine", "ejs");
 //Connect to mongodb
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true});
@@ -19,7 +23,6 @@ const userSchema = new mongoose.Schema({
   password: String
 });
 
-const secret = "Thisismylittlesecret";
 userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
